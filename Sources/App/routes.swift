@@ -1,10 +1,3 @@
-//
-//  routes.swift
-//  App
-//
-//  Created by Suhel Chakraborty on 12/08/19.
-//
-
 import Vapor
 
 public func routes(_ router: Router) throws {

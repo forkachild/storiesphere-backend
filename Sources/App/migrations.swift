@@ -1,10 +1,3 @@
-//
-//  migrations.swift
-//  App
-//
-//  Created by Suhel Chakraborty on 12/08/19.
-//
-
 import FluentPostgreSQL
 
 public func registerMigrations(_ migrations: inout MigrationConfig) {
