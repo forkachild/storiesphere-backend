@@ -28,11 +28,15 @@ fileprivate func registerMiddleware(_ config: inout Config, _ env: inout Environ
 }
 
 fileprivate func registerDatabaseWithMigrations(_ config: inout Config, _ env: inout Environment, _ services: inout Services) throws {
-    let postgresql = PostgreSQLDatabase(config: PostgreSQLDatabaseConfig(url: Constants.databaseUrl,
-                                                                         transport: .unverifiedTLS)!)
     
     var databases = DatabasesConfig()
-    databases.add(database: postgresql, as: .psql)
+    
+    if let databaseConfig = PostgreSQLDatabaseConfig(url: Constants.databaseUrl,
+                                                     transport: .unverifiedTLS) {
+        let postgresql = PostgreSQLDatabase(config: databaseConfig)
+        databases.add(database: postgresql, as: .psql)
+    }
+    
     services.register(databases)
     
     var migrations = MigrationConfig()
