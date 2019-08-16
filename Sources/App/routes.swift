@@ -1,7 +1,6 @@
 import Vapor
 
 public func routes(_ router: Router) throws {
-    
     let usersController: UsersController = DefaultUsersController()
     let postsController: PostsController = DefaultPostController()
     
