@@ -12,49 +12,47 @@ public class ResponseFormatterMiddleware: Middleware {
             do {
                 
                 let response = try next.respond(to: request).wait()
-                
                 promise.succeed(result: response)
                 
             } catch {
                 
+                let response: Response
+                let errorResponse: ApiEmptyResponse
+                
                 switch error {
                     
-                case let apiError as ApiError: do {
-                    let errorResponse = ApiEmptyResponse.fail(withError: apiError)
+                case let apiError as ApiError:
+                    errorResponse = ApiEmptyResponse.fail(withError: apiError)
                     
-                    let response: Response
-                    
-                    do {
-                        response = try errorResponse.encode(for: request).wait()
-                    } catch {
-                        response = request.response("{\"success\":\(errorResponse.success),\"error\":{\"code\":\(errorResponse.error!.code),\"reason\":\"\(errorResponse.error!.message)\"}}", as: .json)
-                    }
-                    
-                    promise.succeed(result: response)
-                    }
-                    
-                default: do {
-                    let apiError = ApiErrors.unknown.error()
-                    let errorResponse = ApiEmptyResponse.fail(withError: apiError)
-                    
-                    let response: Response
-                    
-                    do {
-                        response = try errorResponse.encode(for: request).wait()
-                    } catch {
-                        response = request.response("{\"success\":\(errorResponse.success),\"error\":{\"code\":\(errorResponse.error!.code),\"reason\":\"\(errorResponse.error!.message)\"}}", as: .json)
-                    }
-                    
-                    promise.succeed(result: response)
-                    }
+                default:
+                    errorResponse = ApiEmptyResponse.fail(withError: ApiErrors.unknown.error())
                     
                 }
-            
+                
+                do {
+                    response = try errorResponse.encode(for: request).wait()
+                } catch {
+                    let error = errorResponse.error!
+                    response = request.response(
+                        self.createRawJSONString(withSuccess: false,
+                                                 errorCode: error.code,
+                                                 errorMessage: error.message),
+                        as: .json)
+                }
+                
+                promise.succeed(result: response)
+                
             }
             
         }
         
         return promise.futureResult
+    }
+    
+    private func createRawJSONString(withSuccess success: Bool,
+                                     errorCode code: Int,
+                                     errorMessage message: String) -> String {
+        return "{\"success\":\(success),\"error\":{\"code\":\(code),\"reason\":\"\(message)\"}}"
     }
     
 }

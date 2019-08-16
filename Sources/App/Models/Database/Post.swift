@@ -13,13 +13,6 @@ public final class Post: PostgreSQLModel {
     public var createdAt: Date?
     public var updatedAt: Date?
     public var deletedAt: Date?
-    public var imageUrl: String? {
-        if let id = self.id {
-            return "https://res.cloudinary.com/\(Constants.cloudinaryName)/image/\(id)"
-        } else {
-            return nil
-        }
-    }
     
     public init(id: Int? = nil,
                 title: String? = nil,

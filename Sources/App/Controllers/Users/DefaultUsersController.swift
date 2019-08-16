@@ -27,7 +27,9 @@ public final class DefaultUsersController: UsersController {
                     .wait()
                 
                 if let id = newUser.id {
-                    let tokenUser = try TokenUser(token: String.serverToken, userID: id, validTill: Date().adding(days: 30))
+                    let tokenUser = try TokenUser(token: String.serverToken,
+                                                  userID: id,
+                                                  validTill: Date(addingDays: 30))
                         .create(on: req)
                         .wait()
                     
@@ -74,7 +76,9 @@ public final class DefaultUsersController: UsersController {
                     
                     if existingTokenUser == nil {
                         
-                        let newTokenUser = try TokenUser(token: String.serverToken, userID: id, validTill: Date().adding(days: 30))
+                        let newTokenUser = try TokenUser(token: String.serverToken,
+                                                         userID: id,
+                                                         validTill: Date(addingDays: 30))
                             .create(on: req)
                             .wait()
                         
@@ -83,7 +87,7 @@ public final class DefaultUsersController: UsersController {
                     } else {
                         
                         existingTokenUser?.token = String.serverToken
-                        existingTokenUser?.validTill = Date().adding(days: 30)
+                        existingTokenUser?.validTill = Date(addingDays: 30)
                         
                         let updatedTokenUser = try TokenUser.query(on: req)
                             .update(existingTokenUser!)

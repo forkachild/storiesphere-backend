@@ -19,11 +19,11 @@ class ImageSizeValidator: ValidatorType {
             let mediaType = file.contentType {
             
             if mediaType != .png && mediaType != .jpeg {
-                throw BasicValidationError("Image type not supported")
+                throw ApiErrors.imageFormatNotSupported.error()
             }
             
             if file.data.count > maxSize {
-                throw BasicValidationError("File size too large")
+                throw ApiErrors.imageSizeTooLarge.error()
             }
             
         }

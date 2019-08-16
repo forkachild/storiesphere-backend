@@ -24,6 +24,8 @@ public enum ApiErrors: Int {
     case doesntExist
     case alreadyExists
     case passwordMismatch
+    case imageSizeTooLarge
+    case imageFormatNotSupported
     
     public func error(withCustomReason reason: String? = nil) -> ApiError {
         
@@ -49,6 +51,12 @@ public enum ApiErrors: Int {
             
         case .passwordMismatch:
             return .init(code: self.rawValue, message: reason ?? "Password mismatch")
+            
+        case .imageSizeTooLarge:
+            return .init(code: self.rawValue, message: reason ?? "Image size too large")
+            
+        case .imageFormatNotSupported:
+            return .init(code: self.rawValue, message: reason ?? "Image format not supported")
             
         }
         
